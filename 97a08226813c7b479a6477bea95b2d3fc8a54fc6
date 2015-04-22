@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2b1c0951_06ad7c2d",
+        "filename": "arch/arm/boot/dts/qcom/dsi-panel-leo.dtsi",
+        "patchSetId": 1
+      },
+      "lineNbr": 1440,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2015-04-22T14:00:09Z",
+      "side": 1,
+      "message": "That 6E to 6C could be a problem",
+      "revId": "97a08226813c7b479a6477bea95b2d3fc8a54fc6",
+      "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b1c0951_26aa7816",
+        "filename": "arch/arm/boot/dts/qcom/dsi-panel-leo.dtsi",
+        "patchSetId": 1
+      },
+      "lineNbr": 1442,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2015-04-22T14:00:09Z",
+      "side": 1,
+      "message": "This clk-post change could be a problem too",
+      "revId": "97a08226813c7b479a6477bea95b2d3fc8a54fc6",
+      "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b1c0951_46a7744d",
+        "filename": "arch/arm/boot/dts/qcom/dsi-panel-leo.dtsi",
+        "patchSetId": 1
+      },
+      "lineNbr": 1454,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2015-04-22T14:00:09Z",
+      "side": 1,
+      "message": "OK, THIS needs to be fixed, surprised it\u0027s working",
+      "revId": "97a08226813c7b479a6477bea95b2d3fc8a54fc6",
+      "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b1c0951_66a47048",
+        "filename": "arch/arm/boot/dts/qcom/dsi-panel-leo.dtsi",
+        "patchSetId": 1
+      },
+      "lineNbr": 1477,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2015-04-22T14:00:09Z",
+      "side": 1,
+      "message": "I\u0027m 95% certain we want to keep the original PCC table",
+      "revId": "97a08226813c7b479a6477bea95b2d3fc8a54fc6",
+      "serverId": "56841c99-7c94-43d4-bf0b-cb4707e66d55",
+      "unresolved": false
+    }
+  ]
+}
