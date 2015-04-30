@@ -1063,7 +1063,15 @@ static void msm_hs_set_termios(struct uart_port *uport,
 	msm_hs_write(uport, UART_DM_IMR, 0);
 
 	MSM_HS_DBG("Entering %s\n", __func__);
-	msm_hs_disable_flow_control(uport, true);
+	/*
+	 * Clear the Rx Ready Ctl bit - This ensures that
+	 * flow control lines stop the other side from sending
+	 * data while we change the parameters
+	 */
+	data = msm_hs_read(uport, UART_DM_MR1);
+	/* disable auto ready-for-receiving */
+	data &= ~UARTDM_MR1_RX_RDY_CTL_BMSK;
+	msm_hs_write(uport, UART_DM_MR1, data);
 
 	/*
 	 * Disable Rx channel of UARTDM
