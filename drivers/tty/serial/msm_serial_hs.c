@@ -94,6 +94,7 @@ module_param_named(debug_mask, hs_serial_debug_mask,
 		   int, S_IRUGO | S_IWUSR | S_IWGRP);
 
 #define MSM_HS_DBG(x...) do { \
+	pr_debug(x); \
 	if (hs_serial_debug_mask >= DBG_LEV) { \
 		if (ipc_msm_hs_log_ctxt) \
 			ipc_log_string(ipc_msm_hs_log_ctxt, x); \
@@ -101,6 +102,7 @@ module_param_named(debug_mask, hs_serial_debug_mask,
 } while (0)
 
 #define MSM_HS_INFO(x...) do { \
+	pr_info(x); \
 	if (hs_serial_debug_mask >= INFO_LEV) {\
 		if (ipc_msm_hs_log_ctxt) \
 			ipc_log_string(ipc_msm_hs_log_ctxt, x); \
@@ -1198,6 +1200,11 @@ unsigned int msm_hs_tx_empty(struct uart_port *uport)
 	unsigned int data;
 	unsigned int ret = 0;
 	struct msm_hs_port *msm_uport = UARTDM_TO_MSM(uport);
+
+	if (msm_uport->pm_state != MSM_HS_PM_ACTIVE) {
+		MSM_HS_WARN("%s(): Clocks are off\n", __func__);
+		return;
+	}
 
 	msm_hs_resource_vote(msm_uport);
 	data = msm_hs_read(uport, UART_DM_SR);
