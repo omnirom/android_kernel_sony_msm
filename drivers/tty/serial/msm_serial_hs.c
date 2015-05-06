@@ -255,6 +255,7 @@ struct msm_hs_port {
 	enum msm_hs_pm_state pm_state;
 	atomic_t ioctl_count;
 	bool obs; /* out of band sleep flag */
+  bool port_open; /* Port is open */
 	atomic_t client_req_state;
 };
 
@@ -1201,9 +1202,9 @@ unsigned int msm_hs_tx_empty(struct uart_port *uport)
 	unsigned int ret = 0;
 	struct msm_hs_port *msm_uport = UARTDM_TO_MSM(uport);
 
-	if (msm_uport->pm_state != MSM_HS_PM_ACTIVE) {
-		MSM_HS_WARN("%s(): Clocks are off\n", __func__);
-		return;
+	if (!msm_uport->port_open) {
+		MSM_HS_WARN("%s(): Port is closed\n", __func__);
+		return -1;
 	}
 
 	msm_hs_resource_vote(msm_uport);
@@ -1980,6 +1981,11 @@ void msm_hs_set_mctrl(struct uart_port *uport,
 
 	struct msm_hs_port *msm_uport = UARTDM_TO_MSM(uport);
 
+	if (!msm_uport->port_open) {
+		MSM_HS_WARN("%s(): Port is closed\n", __func__);
+		return;
+	}
+
 	msm_hs_resource_vote(msm_uport);
 	spin_lock_irqsave(&uport->lock, flags);
 	msm_hs_set_mctrl_locked(uport, mctrl);
@@ -2242,6 +2248,11 @@ void msm_hs_request_clock_off(struct uart_port *uport)
 {
 	struct msm_hs_port *msm_uport = UARTDM_TO_MSM(uport);
 
+	if (!msm_uport->port_open) {
+		MSM_HS_WARN("%s(): Port is closed\n", __func__);
+		return;
+	}
+
 	/* Set the flag to disable flow control and wakeup irq */
 	if (msm_uport->obs)
 		atomic_set(&msm_uport->client_req_state, 1);
@@ -2254,6 +2265,11 @@ void msm_hs_request_clock_on(struct uart_port *uport)
 	struct msm_hs_port *msm_uport = UARTDM_TO_MSM(uport);
 
 	msm_hs_resource_vote(UARTDM_TO_MSM(uport));
+
+	if (!msm_uport->port_open) {
+		MSM_HS_WARN("%s(): Port is closed\n", __func__);
+		return;
+	}
 
 	if (msm_uport->pm_state != MSM_HS_PM_ACTIVE) {
 		MSM_HS_WARN("%s(): %p runtime PM callback not invoked",
@@ -2605,6 +2621,7 @@ static int msm_hs_startup(struct uart_port *uport)
 	spin_unlock_irqrestore(&uport->lock, flags);
 
 	msm_hs_resource_unvote(msm_uport);
+	msm_uport->port_open = true;
 	return 0;
 
 sps_disconnect_rx:
@@ -3332,6 +3349,7 @@ static int msm_hs_probe(struct platform_device *pdev)
 
 	msm_uport->tx.flush = FLUSH_SHUTDOWN;
 	msm_uport->rx.flush = FLUSH_SHUTDOWN;
+	msm_uport->port_open = false;
 
 	clk_set_rate(msm_uport->clk, msm_uport->uport.uartclk);
 	msm_hs_clk_bus_vote(msm_uport);
@@ -3518,6 +3536,7 @@ static void msm_hs_shutdown(struct uart_port *uport)
 		MSM_HS_WARN("%s: Client clock vote imbalance\n", __func__);
 		atomic_set(&msm_uport->client_req_state, 0);
 	}
+	msm_uport->port_open = false;
 	/* Free the interrupt */
 	free_irq(uport->irq, msm_uport);
 	if (is_use_low_power_wakeup(msm_uport)) {
