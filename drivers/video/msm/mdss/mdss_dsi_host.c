@@ -2096,14 +2096,27 @@ int mdss_dsi_cmdlist_commit(struct mdss_dsi_ctrl_pdata *ctrl, int from_mdp)
 	/* make sure dsi_cmd_mdp is idle */
 	mdss_dsi_cmd_mdp_busy(ctrl);
 
+	pr_debug("%s: ctrl=%d from_mdp=%d pid=%d\n", __func__,
+				ctrl->ndx, from_mdp, current->pid);
+
+	if (req == NULL)
+		goto need_lock;
+
+	MDSS_XLOG(ctrl->ndx, req->flags, req->cmds_cnt, from_mdp, current->pid);
+
+	/*
+	 * mdss interrupt is generated in mdp core clock domain
+	 * mdp clock need to be enabled to receive dsi interrupt
+	 * also, axi bus bandwidth need since dsi controller will
+	 * fetch dcs commands from axi bus
+	 */
+	mdss_bus_scale_set_quota(MDSS_HW_DSI0, SZ_1M, SZ_1M);
+
 	ctrl_rev = MIPI_INP(ctrl->ctrl_base);
 
 	/* For DSI versions less than 1.3.0, CMD DMA TPG is not supported */
 	if (ctrl_rev < MDSS_DSI_HW_REV_103)
 		req->flags &= ~CMD_REQ_DMA_TPG;
-
-	pr_debug("%s: ctrl=%d from_mdp=%d pid=%d\n", __func__,
-				ctrl->ndx, from_mdp, current->pid);
 
 	if (from_mdp) { /* from mdp kickoff */
 		/*
@@ -2125,13 +2138,6 @@ int mdss_dsi_cmdlist_commit(struct mdss_dsi_ctrl_pdata *ctrl, int from_mdp)
 				(req->flags & CMD_REQ_HS_MODE))
 			mdss_dsi_cmd_start_hs_clk_lane(ctrl);
 	}
-
-
-	if (req == NULL)
-		goto need_lock;
-
-	MDSS_XLOG(ctrl->ndx, req->flags, req->cmds_cnt, from_mdp, current->pid);
-
 
 	pr_debug("%s:  from_mdp=%d pid=%d\n", __func__, from_mdp, current->pid);
 
@@ -2178,6 +2184,7 @@ int mdss_dsi_cmdlist_commit(struct mdss_dsi_ctrl_pdata *ctrl, int from_mdp)
 	}
 
 	mdss_dsi_clk_ctrl(ctrl, DSI_ALL_CLKS, 0);
+	mdss_bus_scale_set_quota(MDSS_HW_DSI0, 0, 0);
 need_lock:
 
 	MDSS_XLOG(ctrl->ndx, from_mdp, ctrl->mdp_busy, current->pid,
@@ -2203,6 +2210,8 @@ need_lock:
 			mdss_dsi_cmd_stop_hs_clk_lane(ctrl);
 	}
 
+	MDSS_XLOG(ctrl->ndx, from_mdp, ctrl->mdp_busy, current->pid,
+							XLOG_FUNC_EXIT);
 	return ret;
 }
 
