@@ -1476,6 +1476,9 @@ int afe_send_spdif_clk_cfg(struct afe_param_id_spdif_clk_cfg *cfg,
 				__func__);
 		ret = -EINVAL;
 		goto fail_cmd;
+	} else {
+		/* set ret to 0 as no timeout happened */
+		ret = 0;
 	}
 	if (atomic_read(&this_afe.status) != 0) {
 		pr_err("%s: config cmd failed\n", __func__);
@@ -1552,6 +1555,7 @@ int afe_send_spdif_ch_status_cfg(struct afe_param_id_spdif_ch_status_cfg
 		ret = -EINVAL;
 		goto fail_cmd;
 	}
+	ret = 0;
 
 fail_cmd:
 	return ret;
@@ -3707,6 +3711,7 @@ int afe_set_digital_codec_core_clock(u16 port_id,
 		ret = -EINVAL;
 		goto fail_cmd;
 	}
+	ret = 0;
 
 fail_cmd:
 	return ret;
@@ -3789,6 +3794,7 @@ int afe_set_lpass_clock(u16 port_id, struct afe_clk_cfg *cfg)
 		ret = -EINVAL;
 		goto fail_cmd;
 	}
+	ret = 0;
 
 fail_cmd:
 	mutex_unlock(&this_afe.afe_cmd_lock);
@@ -3869,6 +3875,7 @@ int afe_set_lpass_internal_digital_codec_clock(u16 port_id,
 		ret = -EINVAL;
 		goto fail_cmd;
 	}
+	ret = 0;
 
 fail_cmd:
 	return ret;
@@ -3942,6 +3949,7 @@ int afe_enable_lpass_core_shared_clock(u16 port_id, u32 enable)
 		ret = -EINVAL;
 		goto fail_cmd;
 	}
+	ret = 0;
 
 fail_cmd:
 	mutex_unlock(&this_afe.afe_cmd_lock);
