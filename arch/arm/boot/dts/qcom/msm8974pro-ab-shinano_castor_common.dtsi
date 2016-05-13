@@ -171,7 +171,13 @@
 
 	bu520x1nvx {
 		compatible = "rohm,bu520x1nvx";
-		gpios = <&pm8941_gpios 36 0x1>;
+
+		acc_cover {
+			label = "lid";
+			gpios = <&pm8941_gpios 36 0x1>;
+			lid-pin = <1>;
+			debounce-interval = <50>;
+		};
 	};
 
 	nxp,tfa98xx-codec {
@@ -186,6 +192,12 @@
 &pm8941_lsid0 {
 	pm8941_iadc: iadc@3600 {
 		qcom,rsense = <10000000>;
+	};
+};
+
+/{
+	shinano_castor_batterydata: qcom,battery-data {
+		#include "batterydata-shinano-castor.dtsi"
 	};
 };
 
@@ -204,6 +216,7 @@
 };
 
 &pm8941_bms {
+	qcom,battery-data = <&shinano_castor_batterydata>;
 	qcom,chg-term-ua = <300000>;
 	qcom,fcc-resolution = <26>;
 };
