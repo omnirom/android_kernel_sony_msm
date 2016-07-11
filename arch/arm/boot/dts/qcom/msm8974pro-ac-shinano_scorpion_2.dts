@@ -1,7 +1,7 @@
-/* arch/arm/boot/dts/qcom/msm8974-v2.2-rhine_amami_row.dts
+/* arch/arm/boot/dts/qcom/msm8974pro-ac-shinano_scorpion.dts
  *
- * Copyright (c) 2013, The Linux Foundation. All rights reserved.
- * Copyright (C) 2013 Sony Mobile Communications AB.
+ * Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2014 Sony Mobile Communications AB.
  *
  * Author: Kouhei Fujiya <Kouhei.X.Fujiya@sonymobile.com>
  *
@@ -17,16 +17,16 @@
 
 /dts-v1/;
 
-#include "msm8974-v2.2.dtsi"
+#include "msm8974pro-ac-pm8941.dtsi"
 #include "msm8974-mtp.dtsi"
-#include "msm8974-v2.2-rhine_amami.dtsi"
+#include "msm8974pro-ac-shinano_common.dtsi"
+#include "msm8974pro-ac-shinano_scorpion_common.dtsi"
+#include "msm8974pro-ac-shinano_scorpion_camera.dtsi"
+#include "dsi-panel-scorpion.dtsi"
 
 / {
-	model = "SoMC Amami ROW";
-	compatible = "somc,amami-row", "qcom,msm8974";
-	qcom,board-id = <8 0>;
+	model = "SoMC Scorpion ROW";
+	compatible = "somc,scorpion-row", "qcom,msm8974";
+        qcom,msm-id = <210 8 0x10001>;
 };
 
-&pm8941_chg {
-	qcom,bpd-detection = "bpd_thm";
-};
