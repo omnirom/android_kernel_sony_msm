@@ -538,16 +538,6 @@
 		gpios = <&pmi8950_gpios 2 1>;
 	};
 
-	sony,ric_info {
-		compatible = "sony_ric";
-		sony,num-partition = <7>;
-		sony,partition-names = "system", "userdata", "cache", "oem",
-				       "apps_log", "diag", "LTALabel";
-		sony,mount_paths = "/system", "/data", "/cache", "/oem",
-				   "/rca", "/idd", "/lta-label";
-		sony,mount-flags = <0x1 0x2 0x6 0x1 0xE 0xE 0xE>;
-	};
-
 	qcom,wdt@b017000 {
 		qcom,bark-time = <12000>;
 	};
