@@ -554,11 +554,6 @@ config LEDS_AS3668
 	  but has its own sysfs API due to the special functionality
 	  it provides.
 
-config LEDS_AS3668_EXTENSION
-	tristate "AS3668 LED driver extension"
-	help
-	  This option enables extensional RGB LED function.
-
 comment "LED Triggers"
 source "drivers/leds/trigger/Kconfig"
 
