@@ -10,8 +10,15 @@
  * GNU General Public License for more details.
  */
 
+/ {
+        aliases {
+                /delete-property/ spi0;
+        };
+};
+
 &soc {
 	i2c@78b9000 { /* BLSP1 QUP5 */
+		qcom,clk-freq-out = <400000>;
 		tsc@24 {
 			compatible = "cy,cyttsp4_i2c_adapter";
 			reg = <0x24>;
@@ -22,14 +29,17 @@
 			pinctrl-names = "pmx_ts_active","pmx_ts_suspend";
 			pinctrl-0 = <&ts_int_active &ts_reset_active>;
 			pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
-			vdd-supply = <&pm8916_l17>;
-			vcc_i2c-supply = <&pm8916_l6>;
+			vdda-supply = <&pm8916_l17>;
+			vddio_EVM-supply = <&pm8916_l6>;
+			vddio_PD1-supply = <&pm8916_l16>;
+			vddio_DEFAULT-supply = <&pm8916_l6>;
+			qcom,module_adc-vadc = <&pm8916_vadc>;
 
 			cy,core {
 				cy,name = "cyttsp4_core";
 				cy,id = "main_ttsp_core";
 
-				gpios = <&msm_gpio 12 0>, <&msm_gpio 13 0>;
+				gpios = <&msm_gpio 12 0>, <&msm_gpio 13 0>, <&msm_gpio 52 0>, <&msm_gpio 60 0>;
 
 				cy,irq_gpio = <13>;
 				cy,rst_gpio = <12>;
@@ -192,19 +202,27 @@
 	};
 
 	i2c@78ba000 { /* BLSP1 QUP6 */
-		nxp@28 {
-			compatible = "nxp,pn544";
+		qcom,clk-freq-out = <400000>;
+		nfc@28 {
+			compatible = "nxp,pn547";
 			reg = <0x28>;
-			interrupt-parent = <&msm_gpio>;
 			interrupts = <21 0x2>;
-			nxp,irq-gpio=<&msm_gpio 21 0>;
-			nxp,vengpio= <&msm_gpio 20 0>;
-			nxp,firmgpio_EVM=<&msm_gpio 112 0>;
-			nxp,firmgpio=<&msm_gpio 120 0>;
-		};
+			interrupt-parent = <&msm_gpio>;
+			nxp,ven = <&msm_gpio 20 0x00>;
+			nxp,irq_gpio = <&msm_gpio 21 0x00>;
+			nxp,dwld_en = <&msm_gpio 22 0x00>;
+			qcom,clk-src = "BBCLK2";
+			qcom,clk-gpio = <&pm8916_gpios 2 0>;
+			clocks = <&clock_rpm clk_bb_clk2_pin>;
+			clock-names = "nfc_clk";
+			pinctrl-names = "pn547-active", "pn547-inactive";
+			pinctrl-0 = <&nfc_int_active &nfc_disable_active>;
+			pinctrl-1 = <&nfc_int_suspend &nfc_disable_suspend>;
+ 		};
 	};
 
 	i2c@78b6000 { /* BLSP1 QUP2 */
+		qcom,clk-freq-out = <400000>;
 		lp5562@30 {
 			compatible = "ti,lp5562";
 			reg = <0x30>;
@@ -316,6 +334,10 @@
 			/* 0 | 0x100 */
 			cm36286,ps_conf3_val = <0x100>;
 		};
+	};
+
+	i2c@78b8000 { /* BLSP1 QUP4 */
+		qcom,clk-freq-out = <400000>;
 	};
 
 	gpio_keys {
