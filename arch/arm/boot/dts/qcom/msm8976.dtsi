@@ -1285,6 +1285,30 @@
 		qcom,pm-qos-latency = <59 150 10741>;
 	};
 
+	fsusb: qcom,ehci-host@79c0000 {
+		compatible = "qcom,ehci-host";
+		reg = <0x79c0000 0x400>;
+		interrupts = <0 132 0>;
+		status = "disabled";
+
+		clocks = <&clock_gcc clk_gcc_usb_fs_ahb_clk>,
+			 <&clock_gcc clk_gcc_usb_fs_system_clk>,
+			 <&clock_gcc clk_gcc_usb_fs_ic_clk>;
+			clock-names = "iface_clk", "core_clk", "alt_core_clk";
+
+		pinctrl-names = "uicc_active", "uicc_sleep";
+		pinctrl-0 = <&uicc_active>;
+		pinctrl-1 = <&uicc_sleep>;
+		HSUSB_3p3-supply = <&pm8950_l14>;
+
+		qcom,msm-bus,name = "uicc";
+		qcom,msm-bus,num-cases = <2>;
+		qcom,msm-bus,num-paths = <1>;
+		qcom,msm-bus,vectors-KBps =
+				<93 512 0 0>,
+				<93 512 12000 192000>;
+	};
+
 	slim_msm: slim@c140000{
 		cell-index = <1>;
 		compatible = "qcom,slim-ngd";
@@ -1608,9 +1632,9 @@
 		qcom,support-bus-scaling;
 		qcom,msm-bus,vectors-KBps =
 			<55 512 0 0>,
-			<55 512 0 0>,
-			<55 512 120000 1200000>,
-			<55 512 393600 3936000>;
+			<55 512 200000 400000>,
+			<55 512 300000 800000>,
+			<55 512 400000 1000000>;
 		clocks = <&clock_gcc clk_crypto_clk_src>,
 			 <&clock_gcc clk_gcc_crypto_clk>,
 			 <&clock_gcc clk_gcc_crypto_ahb_clk>,
