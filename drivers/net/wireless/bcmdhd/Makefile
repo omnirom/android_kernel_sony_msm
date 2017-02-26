@@ -128,11 +128,11 @@ ifneq ($(filter y, $(CONFIG_BCM4339) $(CONFIG_BCM4354) $(CONFIG_BCM4356) $(CONFI
   DHDCFLAGS += -DMAX_GO_CLIENT_CNT=5
 
 # New Features
-  DHDCFLAGS += -DWL11U
-  DHDCFLAGS += -DMFP
   DHDCFLAGS += -DDHD_ENABLE_LPC
   DHDCFLAGS += -DCUSTOM_COUNTRY_CODE
 ifneq ($(filter y, $(CONFIG_BCM4356) $(CONFIG_BCM4358)),)
+  DHDCFLAGS += -DWL11U
+  DHDCFLAGS += -DMFP
 #  DHDCFLAGS += -DRTT_SUPPORT -DRTT_DEBUG
 endif
 
@@ -209,7 +209,9 @@ DHDOFILES := dhd_pno.o dhd_common.o dhd_ip.o dhd_custom_gpio.o \
 	wl_android.o wl_roam.o wl_cfg80211.o wl_cfgp2p.o wl_cfg_btcoex.o wldev_common.o wl_linux_mon.o  \
 	dhd_linux_platdev.o dhd_pno.o dhd_rtt.o dhd_linux_wq.o wl_cfg_btcoex.o \
 	hnd_pktq.o hnd_pktpool.o wl_cfgvendor.o bcmxtlv.o dhd_debug.o dhd_debug_linux.o
-MODNAME := bcmdhd
+ifneq ($(CONFIG_DHD_OF_SUPPORT),)
+  DHDOFILES += dhd_custom_platdev.o
+endif
 
 ifneq ($(CONFIG_BCMDHD_SDIO),)
   DHDOFILES += bcmsdh.o bcmsdh_linux.o bcmsdh_sdmmc.o bcmsdh_sdmmc_linux.o
