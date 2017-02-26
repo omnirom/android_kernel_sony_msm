@@ -29,13 +29,6 @@
  * modify it under the terms of the GNU General Public License Version 2
  * as published by the Free Software Foundation.
  */
-/*
- * Copyright (C) 2015 Sony Mobile Communications Inc.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2, as
- * published by the Free Software Foundation.
- */
 
 #include <linux/delay.h>
 #include <linux/gpio.h>
@@ -55,6 +48,7 @@
 #define PWR_ON_STEP_RANGE1 100
 #define PWR_ON_STEP_RANGE2 900
 #define NUM_PARAMS_REG_ENABLE_SET 2
+#define FPC_SYMLINK "fpc1145_device"
 
 static const char * const pctl_names[] = {
 	"fpc1145_reset_reset",
@@ -502,6 +496,12 @@ static int fpc1145_probe(struct platform_device *pdev)
 		goto exit;
 	}
 
+	rc = sysfs_create_link(&dev->parent->kobj, &dev->kobj, FPC_SYMLINK);
+	if (rc) {
+		dev_err(dev, "could not add symlink\n");
+		goto exit;
+	}
+
 	if (of_property_read_bool(dev->of_node, "fpc,enable-on-boot")) {
 		dev_info(dev, "Enabling hardware\n");
 		(void)device_prepare(fpc1145, true);
@@ -516,6 +516,7 @@ static int fpc1145_remove(struct platform_device *pdev)
 {
 	struct fpc1145_data *fpc1145 = platform_get_drvdata(pdev);
 
+	sysfs_remove_link(&pdev->dev.parent->kobj, FPC_SYMLINK);
 	sysfs_remove_group(&pdev->dev.kobj, &attribute_group);
 	mutex_destroy(&fpc1145->lock);
 	(void)vreg_setup(fpc1145, "vcc_spi", false);
