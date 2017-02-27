@@ -66,6 +66,21 @@ enum msm_sensor_resolution_t {
 	MSM_SENSOR_RES_6,
 	MSM_SENSOR_RES_7,
 	MSM_SENSOR_INVALID_RES,
+/* extension begin */
+	MSM_SENSOR_RES_8,
+	MSM_SENSOR_RES_9,
+	MSM_SENSOR_RES_10,
+	MSM_SENSOR_RES_11,
+	MSM_SENSOR_RES_12,
+	MSM_SENSOR_RES_13,
+	MSM_SENSOR_RES_14,
+	MSM_SENSOR_RES_15,
+	MSM_SENSOR_RES_16,
+	MSM_SENSOR_RES_17,
+	MSM_SENSOR_RES_18,
+	MSM_SENSOR_RES_19,
+	MSM_SENSOR_RES_20,
+/* extension end */
 };
 
 enum msm_camera_stream_type_t {
@@ -186,6 +201,9 @@ struct msm_camera_i2c_read_config {
 	uint16_t reg_addr;
 	enum msm_camera_i2c_data_type data_type;
 	uint16_t data;
+/* extension begin */
+	enum msm_camera_i2c_reg_addr_type addr_type;
+/* extension end */
 };
 
 struct msm_camera_csi2_params {
@@ -322,6 +340,16 @@ struct msm_sensor_power_setting_array32 {
 	uint16_t size_down;
 };
 
+/* extension begin */
+struct msm_camera_i2c_read_config32 {
+	uint16_t slave_addr;
+	uint16_t reg_addr;
+	enum msm_camera_i2c_data_type data_type;
+	uint16_t data;
+	enum msm_camera_i2c_reg_addr_type addr_type;
+};
+/* extension end */
+
 struct msm_camera_sensor_slave_info32 {
 	char sensor_name[MAX_SENSOR_NAME];
 	char eeprom_name[MAX_EEPROM_NAME];
@@ -397,6 +425,9 @@ struct msm_eeprom_cfg_data32 {
 };
 
 struct msm_camera_i2c_seq_reg_setting32 {
+/* extension begin */
+	uint16_t slave_addr;
+/* extension end */
 	compat_uptr_t reg_setting;
 	uint16_t size;
 	enum msm_camera_i2c_reg_addr_type addr_type;
