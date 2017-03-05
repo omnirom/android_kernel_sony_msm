@@ -48,6 +48,7 @@
 #include <linux/suspend.h>
 #include <soc/qcom/msm-core.h>
 #include <linux/cpumask.h>
+#include <linux/uaccess.h>
 
 #define CREATE_TRACE_POINTS
 #define TRACE_MSM_THERMAL
@@ -1130,6 +1131,7 @@ create_exit:
 	return ret;
 }
 
+#ifdef CONFIG_DEBUG_FS
 static int create_thermal_debugfs(void)
 {
 	int ret = 0, idx = 0;
@@ -1183,6 +1185,7 @@ create_exit:
 	}
 	return ret;
 }
+#endif
 
 static struct kobj_attribute cluster_info_attr = __ATTR_RO(cluster_info);
 static int create_cpu_topology_sysfs(void)
@@ -7677,7 +7680,9 @@ int __init msm_thermal_late_init(void)
 	msm_thermal_add_mx_nodes();
 	interrupt_mode_init();
 	create_cpu_topology_sysfs();
+#ifdef CONFIG_DEBUG_FS
 	create_thermal_debugfs();
+#endif
 	msm_thermal_add_bucket_info_nodes();
 	return 0;
 }
