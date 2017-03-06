@@ -9,6 +9,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+/*
+ * NOTE: This file has been modified by Sony Mobile Communications Inc.
+ * Modifications are Copyright (c) 2015 Sony Mobile Communications Inc,
+ * and licensed under the license of the file.
+ */
 
 #include <linux/delay.h>
 #include <linux/clk.h>
@@ -602,7 +607,7 @@ static int32_t msm_cci_data_queue(struct cci_device *cci_dev,
 				continue;
 			}
 #if !defined(CONFIG_SONY_CAM_V4L2)
-			msm_cci_process_half_q(cci_dev,	master, queue);
+			msm_cci_process_half_q(cci_dev, master, queue);
 #endif
 		}
 
