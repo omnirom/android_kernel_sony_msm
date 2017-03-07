@@ -355,16 +355,10 @@ void bluesleep_tx_allow_sleep(void)
 
 	spin_lock_irqsave(&rw_lock, irq_flags);
 
-#ifdef CONFIG_LINE_DISCIPLINE_DRIVER
-	mod_timer(&tx_timer, jiffies + (TX_TIMER_INTERVAL*HZ));
-	clear_bit(BT_TXDATA, &flags);
-#else
 	if (bsi->has_ext_wake == 1)
 		gpio_set_value(bsi->ext_wake, 0);
 	set_bit(BT_EXT_WAKE, &flags);
-
 	bluesleep_tx_idle();
-#endif
 
 	spin_unlock_irqrestore(&rw_lock, irq_flags);
 }
