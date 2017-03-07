@@ -319,9 +319,6 @@ static int msm_hs_ioctl(struct uart_port *uport, unsigned int cmd,
 	}
 	case MSM_DISABLE_UART_CLOCK: {
 		ret = msm_hs_request_clock_off(&msm_uport->uport);
-#ifdef CONFIG_BT_MSM_SLEEP
-		bluesleep_tx_allow_sleep();
-#endif
 		break;
 	}
 	case MSM_GET_UART_CLOCK_STATUS: {
