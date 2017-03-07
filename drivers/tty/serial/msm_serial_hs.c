@@ -2620,7 +2620,11 @@ static int msm_hs_startup(struct uart_port *uport)
 	if (is_use_low_power_wakeup(msm_uport)) {
 		ret = request_threaded_irq(msm_uport->wakeup.irq, NULL,
 					msm_hs_wakeup_isr,
+#ifdef CONFIG_ARCH_MSM8916
+					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+#else
 					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+#endif
 					"msm_hs_wakeup", msm_uport);
 		if (unlikely(ret)) {
 			MSM_HS_ERR("%s():Err getting uart wakeup_irq %d\n",
