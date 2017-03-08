@@ -310,7 +310,8 @@ void bluesleep_outgoing_data(void)
 	spin_lock_irqsave(&rw_lock, irq_flags);
 
 #if defined(CONFIG_LINE_DISCIPLINE_DRIVER)
-	mod_timer(&tx_timer, jiffies + (TX_TIMER_INTERVAL * HZ));
+	if (!test_bit(BT_TXDATA, &flags))
+		mod_timer(&tx_timer, jiffies + (TX_TIMER_INTERVAL * HZ));
 	set_bit(BT_TXDATA, &flags);
 #endif
 
