@@ -1278,10 +1278,21 @@ static int msm_isp_send_hw_cmd(struct vfe_device *vfe_dev,
 				(reg_cfg_cmd->u.dmi_info.hi_tbl_offset -
 				reg_cfg_cmd->u.dmi_info.lo_tbl_offset !=
 				(sizeof(uint32_t)))) {
+#if defined(CONFIG_SONY_CAM_V4L2)
 				pr_err("%s:%d hi %d lo %d\n",
 					__func__, __LINE__,
 					reg_cfg_cmd->u.dmi_info.hi_tbl_offset,
 					reg_cfg_cmd->u.dmi_info.lo_tbl_offset);
+#else
+				pr_err("%s:%d hi %d lo %d\n",
+					__func__, __LINE__,
+					reg_cfg_cmd->u.dmi_info.hi_tbl_offset,
+#ifndef CONFIG_ARCH_SONY_KITAKAMI
+					reg_cfg_cmd->u.dmi_info.lo_tbl_offset);
+#else
+					reg_cfg_cmd->u.dmi_info.hi_tbl_offset);
+#endif
+#endif
 				return -EINVAL;
 			}
 			if (reg_cfg_cmd->u.dmi_info.len <= sizeof(uint32_t)) {
@@ -2184,9 +2195,17 @@ static int msm_vfe_iommu_fault_handler(struct iommu_domain *domain,
 
 	if (token) {
 		vfe_dev = (struct vfe_device *)token;
+#ifndef CONFIG_ARCH_SONY_KITAKAMI
 		if (!vfe_dev->buf_mgr || !vfe_dev->buf_mgr->ops) {
 			pr_err("%s:%d] buf_mgr %pK\n", __func__,
 				__LINE__, vfe_dev->buf_mgr);
+#else
+		if (!vfe_dev->buf_mgr || !vfe_dev->buf_mgr->ops ||
+			!vfe_dev->axi_data.num_active_stream) {
+			pr_err("%s:%d] buf_mgr %pK active strms %d\n", __func__,
+				__LINE__, vfe_dev->buf_mgr,
+				vfe_dev->axi_data.num_active_stream);
+#endif
 			goto end;
 		}
 		if (!vfe_dev->buf_mgr->pagefault_debug) {
