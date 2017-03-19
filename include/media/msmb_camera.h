@@ -73,7 +73,11 @@
  * we return error to avoid integer overflow. Group processing
  * can have max of 9 groups of 8 bufs each. This value may be
  * configured in future*/
+#ifdef CONFIG_ARCH_SONY_KITAKAMI
+#define MSM_CAMERA_MAX_STREAM_BUF 96
+#else
 #define MSM_CAMERA_MAX_STREAM_BUF 72
+#endif
 
 /* Max batch size of processing */
 #define MSM_CAMERA_MAX_USER_BUFF_CNT 16
