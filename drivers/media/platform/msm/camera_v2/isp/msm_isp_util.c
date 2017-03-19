@@ -2310,7 +2310,7 @@ int msm_isp_open_node(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
 	vfe_dev->taskletq_idx = 0;
 	vfe_dev->vt_enable = 0;
 	vfe_dev->reg_update_requested = 0;
-#if defined(CONFIG_SONY_CAM_V4L2)
+#if defined(CONFIG_ARCH_SONY_KITAKAMI)
 	vfe_dev->timeout = VFE_MAX_CFG_TIMEOUT;
 #endif
 

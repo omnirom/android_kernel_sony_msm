@@ -292,7 +292,7 @@ static uint32_t msm_isp_axi_get_plane_size(
 			size = plane_cfg[plane_idx].output_height *
 				plane_cfg[plane_idx].output_width;
 		else
-#if defined(CONFIG_SONY_CAM_V4L2)
+#if defined(CONFIG_ARCH_SONY_KITAKAMI)
 			size = plane_cfg[plane_idx].output_height *
 				plane_cfg[plane_idx].output_width / 2;
 #else
@@ -1240,26 +1240,12 @@ void msm_isp_axi_stream_update(struct vfe_device *vfe_dev,
 			axi_data->stream_info[i].state =
 				axi_data->stream_info[i].state ==
 				START_PENDING ? STARTING : STOPPING;
-#ifndef CONFIG_ARCH_SONY_KITAKAMI
 			msm_isp_update_dual_HW_axi(vfe_dev,
 				&axi_data->stream_info[i]);
 		} else if (axi_data->stream_info[i].state == STARTED ||
 			axi_data->stream_info[i].state == STOPPED) {
 			msm_isp_update_dual_HW_stream_state(vfe_dev,
 				&axi_data->stream_info[i]);
-#else
-#if defined(CONFIG_SONY_CAM_V4L2)
-				if (axi_data->stream_info[i].state == STOPPING) {
-					axi_data->stream_info[i].state = INACTIVE;
-					vfe_dev->axi_data.stream_update[frame_src] = 1;
-				}
-#endif
-		} else if (axi_data->stream_info[i].state == STARTING ||
-			axi_data->stream_info[i].state == STOPPING) {
-			axi_data->stream_info[i].state =
-				axi_data->stream_info[i].state == STARTING ?
-				ACTIVE : INACTIVE;
-#endif
 		}
 	}
 	spin_unlock_irqrestore(&vfe_dev->common_data->common_dev_axi_lock,
@@ -2052,7 +2038,7 @@ static int msm_isp_axi_wait_for_cfg_done(struct vfe_device *vfe_dev,
 		vfe_dev->axi_data.pipeline_update = camif_update;
 	}
 	spin_unlock_irqrestore(&vfe_dev->shared_data_lock, flags);
-#if defined(CONFIG_SONY_CAM_V4L2)
+#if defined(CONFIG_ARCH_SONY_KITAKAMI)
 	rc = wait_for_completion_timeout(
 		&vfe_dev->stream_config_complete,
 		msecs_to_jiffies(vfe_dev->timeout));

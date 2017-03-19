@@ -186,7 +186,11 @@ static struct msm_bus_scale_pdata msm_cpp_bus_scale_data = {
 	qcmd;			 \
 })
 
+#if defined(CONFIG_ARCH_SONY_KITAKAMI)
+#define MSM_CPP_MAX_TIMEOUT_TRIAL 3
+#else
 #define MSM_CPP_MAX_TIMEOUT_TRIAL 0
+#endif
 
 struct msm_cpp_timer_data_t {
 	struct cpp_device *cpp_dev;
