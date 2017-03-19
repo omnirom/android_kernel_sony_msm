@@ -770,6 +770,7 @@ static int sony_util_vreg_set(struct msm_sensor_ctrl_t *s_ctrl,
 			}
 			data->cam_vaf = vreg;
 		}
+#ifndef CONFIG_ARCH_SONY_KITAKAMI
 	} else if (cmd == SONY_GPIO_VDIG) {
 		if (data->gpio_vdig) {
 			vreg = data->gpio_vdig;
@@ -822,6 +823,7 @@ static int sony_util_vreg_set(struct msm_sensor_ctrl_t *s_ctrl,
 			}
 			data->gpio_vaf = vreg;
 		}
+#endif
 	} else {
 		rc = -EINVAL;
 		LOGE("invalid resource\n");
@@ -1131,10 +1133,12 @@ static int sony_util_power_ctrl(struct msm_sensor_ctrl_t *s_ctrl,
 		case SONY_CAM_VIO:
 		case SONY_CAM_VANA:
 		case SONY_CAM_VAF:
+#ifndef CONFIG_ARCH_SONY_KITAKAMI
 		case SONY_GPIO_VDIG:
 		case SONY_GPIO_VIO:
 		case SONY_GPIO_VANA:
 		case SONY_GPIO_VAF:
+#endif
 			rc = sony_util_vreg_set(s_ctrl,
 				data, seq->cmd, seq->val1, seq->val2);
 			if (rc == 0)
