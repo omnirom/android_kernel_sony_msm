@@ -774,6 +774,28 @@ static ssize_t qpnp_flash_led_max_current_show(struct device *dev,
 	return snprintf(buf, PAGE_SIZE, "%u\n", max_curr_avail_ma);
 }
 
+static ssize_t qpnp_led_fault_status_show(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	struct flash_node_data *flash_node;
+	struct led_classdev *led_cdev = dev_get_drvdata(dev);
+	struct qpnp_flash_led *led;
+	int rc;
+	u8 val;
+
+	flash_node = container_of(led_cdev, struct flash_node_data, cdev);
+	led = dev_get_drvdata(&flash_node->spmi_dev->dev);
+
+	rc = spmi_ext_register_readl(led->spmi_dev->ctrl,
+		led->spmi_dev->sid, FLASH_LED_FAULT_STATUS(led->base), &val, 1);
+	if (rc) {
+		dev_err(&led->spmi_dev->dev,
+			"Unable to read fault status rc(%d)\n", rc);
+		return rc;
+	}
+	return scnprintf(buf, PAGE_SIZE, "%d\n", val);
+}
+
 static struct device_attribute qpnp_flash_led_attrs[] = {
 	__ATTR(strobe, (S_IRUGO | S_IWUSR | S_IWGRP),
 				NULL,
@@ -790,6 +812,9 @@ static struct device_attribute qpnp_flash_led_attrs[] = {
 	__ATTR(enable_die_temp_current_derate, (S_IRUGO | S_IWUSR | S_IWGRP),
 				NULL,
 				qpnp_flash_led_die_temp_store),
+	__ATTR(fault_status, S_IRUSR | S_IRGRP,
+				qpnp_led_fault_status_show,
+				NULL),
 };
 
 static int qpnp_flash_led_get_thermal_derate_rate(const char *rate)
