@@ -1442,11 +1442,6 @@ static void msm_hs_submit_tx_locked(struct uart_port *uport)
 	mod_timer(&tx->tx_timeout_timer,
 		jiffies + msecs_to_jiffies(MSEC_PER_SEC));
 
-	/* Notify the bluesleep driver of outgoing data, if available. */
-#if defined(CONFIG_BT_MSM_SLEEP) && !defined(CONFIG_LINE_DISCIPLINE_DRIVER)
-	bluesleep_outgoing_data();
-#endif
-
 	MSM_HS_DBG("%s:Enqueue Tx Cmd, ret %d\n", __func__, ret);
 }
 
@@ -2727,7 +2722,7 @@ static int msm_hs_startup(struct uart_port *uport)
 
 
 	spin_lock_irqsave(&uport->lock, flags);
-#ifndef CONFIG_LINE_DISCIPLINE_DRIVER
+#ifdef CONFIG_BT_MSM_SLEEP
 	atomic_set(&msm_uport->client_count, 0);
 	atomic_set(&msm_uport->client_req_state, 0);
 #endif
