@@ -20,6 +20,13 @@
 
 #include "power.h"
 
+#ifdef CONFIG_ARCH_SONY_LOIRE
+#include <linux/moduleparam.h>
+
+static bool enable_si_ws = true;
+module_param(enable_si_ws, bool, 0644);
+#endif
+
 /*
  * If set, the suspend/hibernate code will abort transitions to a sleep state
  * if wakeup events are registered during or immediately before the transition.
@@ -531,6 +538,13 @@ static void wakeup_source_activate(struct wakeup_source *ws)
 	if (WARN_ONCE(wakeup_source_not_registered(ws),
 			"unregistered wakeup source\n"))
 		return;
+
+#ifdef CONFIG_ARCH_SONY_LOIRE
+	if (!enable_si_ws && !strcmp(ws->name, "sensor_ind")) {
+		pr_info("wakeup source sensor_ind activate skipped\n");
+		return;
+	}
+#endif
 
 	/*
 	 * active wakeup source should bring the system
