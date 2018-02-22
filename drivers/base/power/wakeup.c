@@ -532,6 +532,13 @@ static void wakeup_source_activate(struct wakeup_source *ws)
 			"unregistered wakeup source\n"))
 		return;
 
+#ifdef CONFIG_ARCH_SONY_LOIRE
+	if (!strcmp(ws->name, "sensor_ind")) {
+		pr_info("wakeup source sensor_ind activate skipped\n");
+		return;
+	}
+#endif
+
 	/*
 	 * active wakeup source should bring the system
 	 * out of PM_SUSPEND_FREEZE state
