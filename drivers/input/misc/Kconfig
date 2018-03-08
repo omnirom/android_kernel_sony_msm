@@ -989,5 +989,5 @@ config SENSORS_ET51X
 	default n
 	help
 	  If you say yes here you get support for Egistec's
-	fingerprint sensor ET51X.
+	  fingerprint sensor ET51X.
 endif
