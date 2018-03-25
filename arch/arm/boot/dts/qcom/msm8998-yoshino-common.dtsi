@@ -44,13 +44,10 @@
 			fstab {
 				compatible = "android,fstab";
 				vendor {
-					status = "disabled";
-				};
-				system {
-					compatible = "android,system";
-					dev = "/dev/block/platform/soc/1da4000.ufshc/by-name/system";
+					compatible = "android,vendor";
+					dev = "/dev/block/platform/soc/1da4000.ufshc/by-name/vendor";
 					type = "ext4";
-					mnt_flags = "ro,barrier=1,discard";
+					mnt_flags = "ro,barrier=1";
 					fsmgr_flags = "wait";
 					status = "ok";
 				};
@@ -58,7 +55,15 @@
 					compatible = "android,odm";
 					dev = "/dev/block/platform/soc/1da4000.ufshc/by-name/oem";
 					type = "ext4";
-					mnt_flags = "ro,barrier=1,discard";
+					mnt_flags = "ro,barrier=1";
+					fsmgr_flags = "wait";
+					status = "ok";
+				};
+				system {
+					compatible = "android,system";
+					dev = "/dev/block/platform/soc/1da4000.ufshc/by-name/system";
+					type = "ext4";
+					mnt_flags = "ro,barrier=1";
 					fsmgr_flags = "wait";
 					status = "ok";
 				};
