@@ -3,12 +3,8 @@ dtb-$(CONFIG_MACH_SONY_LILAC) += msm8998-v2-yoshino-lilac_generic.dtb
 dtb-$(CONFIG_MACH_SONY_LILAC) += msm8998-v2.1-yoshino-lilac_generic.dtb
 dtb-$(CONFIG_MACH_SONY_MAPLE) += msm8998-v2-yoshino-maple_generic.dtb
 dtb-$(CONFIG_MACH_SONY_MAPLE) += msm8998-v2.1-yoshino-maple_generic.dtb
-dtb-$(CONFIG_MACH_SONY_MAPLE_DSDS) += msm8998-v2-yoshino-maple_dsds.dtb
-dtb-$(CONFIG_MACH_SONY_MAPLE_DSDS) += msm8998-v2.1-yoshino-maple_dsds.dtb
 dtb-$(CONFIG_MACH_SONY_POPLAR) += msm8998-v2-yoshino-poplar_generic.dtb
 dtb-$(CONFIG_MACH_SONY_POPLAR) += msm8998-v2.1-yoshino-poplar_generic.dtb
-dtb-$(CONFIG_MACH_SONY_POPLAR_DSDS) += msm8998-v2-yoshino-poplar_dsds.dtb
-dtb-$(CONFIG_MACH_SONY_POPLAR_DSDS) += msm8998-v2.1-yoshino-poplar_dsds.dtb
 
 # MSM8996
 dtb-$(CONFIG_MACH_SONY_DORA)            += msm8996-v3.0-pmi8996-tone-dora_generic.dtb
@@ -21,6 +17,10 @@ dtb-$(CONFIG_MACH_SONY_KEYAKI)          += msm8996-v3-pmi8996-tone-keyaki_generi
 # MSM8956
 dtb-$(CONFIG_MACH_SONY_SUZU)            += msm8956-v1.1-loire-suzu_generic.dtb
 dtb-$(CONFIG_MACH_SONY_KUGO)            += msm8956-v1.1-loire-kugo_generic.dtb
+dtb-$(CONFIG_MACH_SONY_BLANC)		+= msm8956-v1.1-loire-blanc_generic.dtb
+dtb-$(CONFIG_MACH_SONY_BLANC)		+= apq8056-v1.1-loire-blanc_windy.dtb
+dtb-$(CONFIG_MACH_SONY_BLANC)           += msm8956-loire-blanc_generic.dtb
+dtb-$(CONFIG_MACH_SONY_BLANC)		+= apq8056-loire-blanc_windy.dtb
 
 dtb-$(CONFIG_MACH_SONY_PIONEER)            += sdm630-nile-pioneer.dtb
 dtb-$(CONFIG_MACH_SONY_DISCOVERY)          += sdm630-nile-discovery.dtb
