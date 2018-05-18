@@ -5,7 +5,7 @@ config SND_SOC_MSM_HOSTLESS_PCM
 
 config SND_SOC_MSM_QDSP6V2_INTF
 	bool "SoC Q6 audio driver for MSM/APQ"
-	depends on MSM_QDSP6_APRV2_GLINK
+	depends on MSM_QDSP6_APRV2 || MSM_QDSP6_APRV2_GLINK
 	help
 	 To add support for SoC audio on MSM/APQ.
 	 This will enable all the platform specific
@@ -174,7 +174,6 @@ config SND_SOC_MSM8996
 	select SND_DYNAMIC_MINORS
 	select MSM_QDSP6_APRV2
 	select MSM_QDSP6V2_CODECS
-	select SND_SOC_WCD9330
 	select SND_SOC_WCD9335
 	select SND_SOC_WSA881X
 	select SND_SOC_MSM_HDMI_CODEC_RX
@@ -233,7 +232,6 @@ config SND_SOC_MSM8952
 	select SND_DYNAMIC_MINORS
 	select MSM_QDSP6_APRV2
 	select MSM_QDSP6V2_CODECS
-	select SND_SOC_WCD9330
 	select SND_SOC_WCD9335
 	select SND_SOC_WSA881X
 	select MFD_CORE
@@ -243,7 +241,6 @@ config SND_SOC_MSM8952
 	select DOLBY_DS2
 	select SND_SOC_CPE
 	select SND_SOC_WCD_CPE
-	select SND_SOC_MSM_HDMI_DBA_CODEC_RX
 	select SND_HWDEP
         select DTS_EAGLE
 	help
