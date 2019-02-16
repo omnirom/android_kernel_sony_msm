@@ -23,7 +23,12 @@
 #include "cpuquiet.h"
 
 LIST_HEAD(cpuquiet_governors);
-struct cpuquiet_governor *cpuquiet_curr_governor;
+static struct cpuquiet_governor *cpuquiet_curr_governor;
+
+struct cpuquiet_governor *cpuquiet_get_curr_governor(void)
+{
+	return cpuquiet_curr_governor;
+}
 
 struct cpuquiet_governor *cpuquiet_get_first_governor(void)
 {
@@ -50,22 +55,25 @@ int cpuquiet_switch_governor(struct cpuquiet_governor *gov)
 {
 	int err = 0;
 
+	if (!gov)
+		return -EINVAL;
+
+	if (!try_module_get(gov->owner))
+		return -EINVAL;
+
 	if (cpuquiet_curr_governor) {
 		if (cpuquiet_curr_governor->stop)
 			cpuquiet_curr_governor->stop();
 		module_put(cpuquiet_curr_governor->owner);
+		cpuquiet_curr_governor = NULL;
 	}
 
-	cpuquiet_curr_governor = gov;
+	cpuquiet_switch_funcs(gov->use_isolation);
 
-	if (gov) {
-		if (!try_module_get(cpuquiet_curr_governor->owner))
-			return -EINVAL;
-		if (gov->start)
-			err = gov->start();
-		if (!err)
-			cpuquiet_curr_governor = gov;
-	}
+	if (gov->start)
+		err = gov->start();
+	if (!err)
+		cpuquiet_curr_governor = gov;
 
 	return err;
 }
