@@ -17,6 +17,8 @@
 #include "charger-ganges-mermaid.dtsi"
 
 &soc {
+	/delete-node/ qcom,qbt1000;
+
 	pinctrl@03000000 {
 		disabled-pins = <8 9 10 11>;
 
@@ -29,11 +31,11 @@
 		};
 	};
 
-       somc_pinctrl: somc_pinctrl {
-               /* If product common default setting is needed,
-               fill pinctrl-1 value in <product>_common.dtsi */
-               pinctrl-1 = <>;
-       };
+	somc_pinctrl: somc_pinctrl {
+		/* If product common default setting is needed,
+		fill pinctrl-1 value in <product>_common.dtsi */
+		pinctrl-1 = <>;
+	};
 
 	s5712 {
 		compatible = "s5712-switch";
@@ -139,49 +141,10 @@
 &tlmm {
 };
 
-&spmi_bus {
-	qcom,pm660@1 {
-		pm660_haptics: qcom,haptic@c000 {
-			qcom,actuator-type = "erm";
-			qcom,vmax-mv = <3000>;
-		};
-	};
-};
-
 &sdhc_2 {
 	cd-gpios = <&tlmm 54 0x0>;
 };
 
-&pm660_vadc {
-	chan@50 {
-		label = "pa_therm1";
-		reg = <0x50>;
-		qcom,decimation = <2>;
-		qcom,pre-div-channel-scaling = <0>;
-		qcom,calibration-type = "ratiometric";
-		qcom,scale-function = <17>;
-		qcom,hw-settle-time = <2>;
-		qcom,fast-avg-setup = <0>;
-		qcom,vadc-thermal-node;
-	};
-
-	chan@51 { /* quiet_therm */
-		qcom,scale-function = <17>;
-	};
-
-	chan@4e { /* emmc_therm */
-		qcom,scale-function = <17>;
-	};
-
-	chan@4f { /* pa_therm0 */
-		qcom,scale-function = <17>;
-	};
-
-	chan@4d { /* msm_therm */
-		qcom,scale-function = <17>;
-	};
-
-	chan@4c { /* xo_therm */
-		qcom,scale-function = <18>;
-	};
+&mdss_dsi0 {
+        qcom,dsi-pref-prim-pan = <&dsi_nt36672a_tianma_fhdplus_video>;
 };
