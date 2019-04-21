@@ -10,7 +10,6 @@
  * GNU General Public License for more details.
 */
 
-#include "charger-ganges-common.dtsi"
 #include <dt-bindings/gpio/gpio.h>
 #include "sdm630-ganges_pinctrl.dtsi"
 
@@ -30,7 +29,6 @@
 			ecc-size = <16>;
 		};
 	};
-
 
 	firmware: firmware {
 		android {
@@ -75,86 +73,28 @@
 		pinctrl-2 = <>;
 	};
 
+	et510 {
+		compatible = "etspi,et510";
+		interrupt-parent = <&tlmm>;
+		interrupts = <72 0x0>;
+		et51x,gpio_rst = <&tlmm 20 0>;
+		et51x,gpio_irq = <&tlmm 72 0>;
+		vdd_ana-supply = <&pm660l_l6>;
+
+		spi-max-frequency = <1000000>;
+
+		pinctrl-names = "et51x_reset_reset",
+			"et51x_reset_active",
+			"et51x_irq_active";
+		pinctrl-0 = <&msm_gpio_20>;
+		pinctrl-1 = <&msm_gpio_20_output_high>;
+		pinctrl-2 = <&msm_gpio_72>;
+	};
+
 	mdss_dsi: qcom,mdss_dsi@0 {
 		mdss_dsi0: qcom,mdss_dsi_ctrl0@c994000 {
 			vddio-supply = <&pm660_l11>;
 		};
-	};
-
-	dsi_panel_pwr_supply_full_incell: dsi_panel_pwr_supply_full_incell {
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		qcom,panel-supply-entry@0 {
-			reg = <0>;
-			qcom,supply-name = "vddio";
-			qcom,supply-min-voltage = <1650000>;
-			qcom,supply-max-voltage = <1950000>;
-			qcom,supply-enable-load = <32000>;
-			qcom,supply-disable-load = <80>;
-			qcom,supply-post-on-sleep = <10>;
-		};
-
-		qcom,panel-supply-entry@1 {
-			reg = <1>;
-			qcom,supply-name = "lab";
-			qcom,supply-min-voltage = <5000000>;
-			qcom,supply-max-voltage = <6000000>;
-			qcom,supply-enable-load = <11000>;
-			qcom,supply-disable-load = <100>;
-			qcom,supply-post-on-sleep = <10>;
-			qcom,supply-post-off-sleep = <10>;
-		};
-
-		qcom,panel-supply-entry@2 {
-			reg = <2>;
-			qcom,supply-name = "ibb";
-			qcom,supply-min-voltage = <5000000>;
-			qcom,supply-max-voltage = <6000000>;
-			qcom,supply-enable-load = <6000>;
-			qcom,supply-disable-load = <100>;
-			qcom,supply-post-on-sleep = <10>;
-			qcom,supply-post-off-sleep = <10>;
-		};
-
-	};
-
-	int_codec: sound {
-		qcom,msm-micbias1-ext-cap;
-		qcom,msm-micbias2-ext-cap = "false";
-		qcom,msm-hs-micbias-type = "internal";
-		qcom,audio-routing =
-			"RX_BIAS", "INT_MCLK0",
-			"SPK_RX_BIAS", "INT_MCLK0",
-			"INT_LDO_H", "INT_MCLK0",
-			"RX_I2S_CLK", "INT_MCLK0",
-			"TX_I2S_CLK", "INT_MCLK0",
-			"MIC BIAS External", "Handset Mic",
-			"MIC BIAS Internal2", "Headset Mic",
-			"MIC BIAS External", "Secondary Mic",
-			"AMIC1", "MIC BIAS External",
-			"AMIC2", "MIC BIAS Internal2",
-			"AMIC3", "MIC BIAS External",
-			"DMIC1", "MIC BIAS External",
-			"MIC BIAS External", "Digital Mic1",
-			"DMIC2", "MIC BIAS External",
-			"MIC BIAS External", "Digital Mic2",
-			"DMIC3", "MIC BIAS External",
-			"MIC BIAS External", "Digital Mic3",
-			"DMIC4", "MIC BIAS External",
-			"MIC BIAS External", "Digital Mic4",
-			"SpkrLeft IN", "SPK1 OUT",
-			"SpkrRight IN", "SPK2 OUT",
-			"PDM_IN_RX1", "PDM_OUT_RX1",
-			"PDM_IN_RX2", "PDM_OUT_RX2",
-			"PDM_IN_RX3", "PDM_OUT_RX3",
-			"ADC1_IN", "ADC1_OUT",
-			"ADC2_IN", "ADC2_OUT",
-			"ADC3_IN", "ADC3_OUT";
-
-		qcom,wsa-max-devs = <1>;
-		qcom,wsa-aux-dev-prefix = "SpkrLeft", "SpkrLeft",
-					  "SpkrLeft", "SpkrLeft";
 	};
 
 	qcom,wdt@17980000 {
@@ -188,24 +128,24 @@
 		};
 	};
 
-	egistec {
-		compatible = "etspi,et510";
-		spi-max-frequency = <1000000>;
-		et512_vcc-supply = <&pm660l_l6>;
-		input-device-name = "et510";
+	s5712 {
+		compatible = "s5712-switch";
 		interrupt-parent = <&tlmm>;
-		interrupts = <72 0x0>;
-		egis,reset-gpio    = <&tlmm 20 0>;
-		egis,irq-gpio      = <&tlmm 72 0>;
+		interrupts = <75 0x3>;
+		//vddio-supply = <&pm660l_l14>;
+		linux,gpio-int = <&tlmm 75 0x1>;
+		linux,wakeup;
+		linux,min-uv = <1700000>;
+		linux,max-uv = <1900000>;
 	};
 
 	qusb_phy0: qusb@c012000 {
-		qcom,tune2-efuse-correction = <4>;
-		qcom,qusb-phy-init-seq = <0xf8 0x80
-			0xd3 0x84
+		qcom,tune2-efuse-num-bits = <0>;
+		qcom,tune2-efuse-correction = <0>;
+		qcom,qusb-phy-init-seq = <0xa7 0x80
+			0x22 0x84
 			0x83 0x88
 			0xc7 0x8c
-			0x03 0x90
 			0x30 0x08
 			0x79 0x0c
 			0x21 0x10
@@ -225,14 +165,6 @@
 	somc,area_count_table = <0 137 273 410 546 683 819 956
 				1092 1229 1365 1638 1911 2184 2457
 				2730 3003 3276 3549 3822 4095>;
-};
-
-&mdss_mdp {
-	qcom,mdss-pref-prim-intf = "dsi";
-};
-
-&mdss_dsi {
-	hw-config = "single_dsi";
 };
 
 &pmx_mdss{
@@ -287,21 +219,9 @@
 };
 
 
-
 /* PM660L */
 &red_led {
 	linux,name = "led:rgb_red";
-
-	somc,pwm-channel = <2>;
-	linux,name = "red";
-	linux,default-trigger = "none";
-	somc,color_variation_max_num = <4>;
-	somc,max_current = <
-		45 511 511
-		46 511 511
-		47 511 511
-		48 511 511>;
-
 	qcom,start-idx = <0>;
 	qcom,lut-flags = <31>;
 	qcom,pause-lo = <500>;
@@ -314,17 +234,6 @@
 
 &green_led {
 	linux,name = "led:rgb_green";
-
-	somc,pwm-channel = <1>;
-	linux,name = "green";
-	linux,default-trigger = "none";
-	somc,color_variation_max_num = <4>;
-	somc,max_current = <
-		45 511 511
-		46 511 511
-		47 511 511
-		48 511 511>;
-
 	qcom,start-idx = <0>;
 	qcom,lut-flags = <31>;
 	qcom,pause-lo = <500>;
@@ -337,17 +246,6 @@
 
 &blue_led {
 	linux,name = "led:rgb_blue";
-
-	somc,pwm-channel = <0>;
-	linux,name = "blue";
-	linux,default-trigger = "none";
-	somc,color_variation_max_num = <4>;
-	somc,max_current = <
-		45 511 511
-		46 511 511
-		47 511 511
-		48 511 511>;
-
 	qcom,start-idx = <0>;
 	qcom,lut-flags = <31>;
 	qcom,pause-lo = <500>;
@@ -358,12 +256,42 @@
 	qcom,use-blink;
 };
 
+&pm660l_torch0 {
+	qcom,current-ma = <100>;
+};
+
+&pm660l_torch1 {
+	qcom,current-ma = <100>;
+};
+
+&pm660l_torch2 {
+	qcom,current-ma = <100>;
+};
+
+&pm660l_switch0 {
+	qcom,led-mask = <1>;
+};
+
+&mdss_fb0 {
+	/delete-node/ qcom,cont-splash-memory;
+};
+
+&mdss_mdp {
+	qcom,mdss-pref-prim-intf = "dsi";
+};
+
+&mdss_dsi {
+	hw-config = "single_dsi";
+};
+
 &mdss_dsi0 {
 	pinctrl-names = "mdss_default", "mdss_sleep";
 	pinctrl-0 = <&mdss_dsi_active &mdss_te_active>;
 	pinctrl-1 = <&mdss_dsi_suspend &mdss_te_suspend>;
-	qcom,platform-te-gpio = <&tlmm 59 0>;
+	qcom,display-id = "primary";
+	qcom,mdss-fb-map-prim = <&mdss_fb0>;
 	qcom,platform-reset-gpio = <&tlmm 53 0>;
+	qcom,platform-te-gpio = <&tlmm 59 0>;
 };
 
 &mdss_dp_ctrl {
@@ -398,6 +326,46 @@
 		nxp,dwld_en = <&tlmm 30 0x00>;
 		nxp,ven = <&tlmm 29 0x00>;
 	};
+};
+
+&int_codec {
+	status = "ok";
+	qcom,msm-micbias1-ext-cap;
+	qcom,msm-micbias2-ext-cap;
+	qcom,msm-hs-micbias-type = "external";
+
+	qcom,wsa-max-devs = <1>;
+	qcom,wsa-aux-dev-prefix = "SpkrLeft", "SpkrLeft",
+				  "SpkrLeft", "SpkrLeft";
+
+	qcom,audio-routing =
+		"RX_BIAS", "INT_MCLK0",
+		"SPK_RX_BIAS", "INT_MCLK0",
+		"INT_LDO_H", "INT_MCLK0",
+		"RX_I2S_CLK", "INT_MCLK0",
+		"TX_I2S_CLK", "INT_MCLK0",
+		"MIC BIAS External", "Handset Mic",
+		"MIC BIAS External2", "Headset Mic",
+		"MIC BIAS External", "Secondary Mic",
+		"AMIC1", "MIC BIAS External",
+		"AMIC2", "MIC BIAS External2",
+		"AMIC3", "MIC BIAS External",
+		"DMIC1", "MIC BIAS External",
+		"MIC BIAS External", "Digital Mic1",
+		"DMIC2", "MIC BIAS External",
+		"MIC BIAS External", "Digital Mic2",
+		"DMIC3", "MIC BIAS External",
+		"MIC BIAS External", "Digital Mic3",
+		"DMIC4", "MIC BIAS External",
+		"MIC BIAS External", "Digital Mic4",
+		"SpkrLeft IN", "SPK1 OUT",
+		"SpkrRight IN", "SPK2 OUT",
+		"PDM_IN_RX1", "PDM_OUT_RX1",
+		"PDM_IN_RX2", "PDM_OUT_RX2",
+		"PDM_IN_RX3", "PDM_OUT_RX3",
+		"ADC1_IN", "ADC1_OUT",
+		"ADC2_IN", "ADC2_OUT",
+		"ADC3_IN", "ADC3_OUT";
 };
 
 &rpm_bus {
@@ -515,3 +483,82 @@
 	};
 };
 
+&pm660_charger {
+	io-channels = <&pm660_rradc 2>,
+			<&pm660_rradc 3>,
+			<&pm660_rradc 4>,
+			<&pm660_rradc 8>,
+			<&pm660_rradc 10>;
+	io-channel-names = "skin_temp",
+			   "usbin_i",
+			   "usbin_v",
+			   "charger_temp",
+			   "charger_temp_max";
+	qcom,usb-icl-ua = <1500000>;
+	qcom,fcc-max-ua = <400000>;
+	qcom,fv-max-uv = <4000000>;
+	qcom,hvdcp-disable;
+	qcom,prechg-safety-time = <1>;
+	qcom,fastchg-safety-time = <2>;
+	qcom,otg-cl-ua = <500000>;
+	somc,thermal-lo-volt-icl-ua =  <2000000 1500000 1500000
+					1500000 1300000 1100000
+					1100000 1000000  900000
+					 900000  500000  200000
+					 100000       0       0>;
+	somc,thermal-hi-volt-icl-ua =  <1700000 1700000 1700000
+					1700000 1500000 1500000
+					1000000 1000000 1000000
+					 600000  500000  200000
+					 100000        0      0>;
+	somc,fake-charging-temp-level = <13>;
+	somc,product-icl-ua = <2000000>;
+	somc,high-voltage-icl-ua = <1700000>;
+};
+
+&pm660_pdphy {
+	qcom,default-sink-caps = <5000 2000>, /* 5V @ 2A */
+				 <9000 1700>; /* 9V @ 1.7A */
+};
+
+&pm660_rradc {
+	somc,reg-cfg =
+	/* addr mask value */
+	<0x83 0x07 0x04>, /* FG_ADC_RR_AUX_THERM_CFG */
+	<0x88 0xFF 0xB6>, /* FG_ADC_RR_AUX_THERM_C1 */
+	<0x89 0xFF 0x2D>, /* FG_ADC_RR_AUX_THERM_C2 */
+	<0x8A 0xFF 0xE5>, /* FG_ADC_RR_AUX_THERM_C3 */
+	<0x8B 0xFF 0xA0>; /* FG_ADC_RR_AUX_THERM_HALF_RANGE */
+};
+
+&pm660_fg {
+	qcom,fg-delta-soc-thr = <1>;
+	qcom,fg-recharge-soc-thr = <95>;
+	qcom,fg-empty-voltage = <3100>;
+	qcom,fg-rsense-sel = <0>;
+	qcom,fg-jeita-thresholds = <5 10 45 55>;
+	qcom,fg-esr-pulse-thresh-ma = <110>;
+	qcom,slope-limit-temp-threshold = <100>;
+	qcom,slope-limit-coeffs = <1 1 1 1>;
+	qcom,fg-esr-tight-lt-filter-micro-pct = <30000>;
+	qcom,fg-esr-broad-lt-filter-micro-pct = <30000>;
+	qcom,cycle-counter-en;
+	qcom,cl-start-capacity = <15>;
+	qcom,cl-min-temp = <150>;
+	qcom,cl-max-temp = <450>;
+	qcom,fg-jeita-hyst-temp = <2>;
+	qcom,hold-soc-while-full;
+	qcom,cl-max-increment = <0>;
+	qcom,cl-max-decrement = <20>;
+	qcom,battery-thermal-coefficients = [c7 50 ff];
+	qcom,fg-sys-term-current = <(-175)>;
+	qcom,fg-chg-term-current = <150>;
+	somc,jeita-step-use-real-temp;
+	somc,jeita-batt-temp-correction = <0>;
+};
+
+&usb3 {
+	dwc3@a800000 {
+		maximum-speed = "high-speed";
+	};
+};

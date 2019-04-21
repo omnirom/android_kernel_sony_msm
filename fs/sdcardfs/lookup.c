@@ -18,6 +18,8 @@
  * General Public License.
  */
 
+#define __FS_HAS_ENCRYPTION IS_ENABLED(CONFIG_FS_ENCRYPTION)
+#include <linux/fscrypt.h>
 #include "sdcardfs.h"
 #include "linux/delay.h"
 
@@ -274,6 +276,7 @@ static struct dentry *__sdcardfs_lookup(struct dentry *dentry,
 	lower_dir_dentry = lower_parent_path->dentry;
 	lower_dir_mnt = lower_parent_path->mnt;
 
+retry_lookup:
 	/* Use vfs_path_lookup to check if the dentry exists or not */
 	err = vfs_path_lookup(lower_dir_dentry, lower_dir_mnt, name->name, 0,
 				&lower_path);
@@ -377,8 +380,14 @@ put_name:
 		 * dentry then. Don't confuse the lower filesystem by forcing
 		 * one on it now...
 		 */
-		err = -ENOENT;
-		goto out;
+		struct inode *lower_dir = d_inode(lower_dir_dentry);
+
+		if (IS_ENCRYPTED(lower_dir) &&
+				!fscrypt_has_encryption_key(lower_dir)) {
+			err = -ENOENT;
+			goto out;
+		}
+		goto retry_lookup;
 	}
 
 	lower_path.dentry = lower_dentry;
@@ -426,7 +435,12 @@ struct dentry *sdcardfs_lookup(struct inode *dir, struct dentry *dentry,
 	}
 
 	/* save current_cred and override it */
-	OVERRIDE_CRED_PTR(SDCARDFS_SB(dir->i_sb), saved_cred, SDCARDFS_I(dir));
+	saved_cred = override_fsids(SDCARDFS_SB(dir->i_sb),
+						SDCARDFS_I(dir)->data);
+	if (!saved_cred) {
+		ret = ERR_PTR(-ENOMEM);
+		goto out_err;
+	}
 
 	sdcardfs_get_lower_path(parent, &lower_parent_path);
 
@@ -457,7 +471,7 @@ struct dentry *sdcardfs_lookup(struct inode *dir, struct dentry *dentry,
 
 out:
 	sdcardfs_put_lower_path(parent, &lower_parent_path);
-	REVERT_CRED(saved_cred);
+	revert_fsids(saved_cred);
 out_err:
 	dput(parent);
 	return ret;
