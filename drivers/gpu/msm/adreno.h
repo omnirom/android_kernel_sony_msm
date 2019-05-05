@@ -124,6 +124,9 @@
 /* The core supports IO-coherent memory */
 #define ADRENO_IOCOHERENT BIT(16)
 
+/* The MMU carveout size is limited to 8MB */
+#define ADRENO_MMU_GLOBAL_MEMSZ_8M BIT(30)
+
 /*
  * Adreno GPU quirks - control bits for various workarounds
  */
@@ -325,6 +328,29 @@ struct adreno_firmware {
 	size_t size;
 	unsigned int version;
 	struct kgsl_memdesc memdesc;
+};
+
+/**
+ * struct adreno_perfcounter_list_node - struct to store perfcounters
+ * allocated by a process on a kgsl fd.
+ * @groupid: groupid of the allocated perfcounter
+ * @countable: countable assigned to the allocated perfcounter
+ * @node: list node for perfcounter_list of a process
+ */
+struct adreno_perfcounter_list_node {
+	unsigned int groupid;
+	unsigned int countable;
+	struct list_head node;
+};
+
+/**
+ * struct adreno_device_private - Adreno private structure per fd
+ * @dev_priv: the kgsl device private structure
+ * @perfcounter_list: list of perfcounters used by the process
+ */
+struct adreno_device_private {
+	struct kgsl_device_private dev_priv;
+	struct list_head perfcounter_list;
 };
 
 /**
@@ -1830,7 +1856,7 @@ static inline unsigned int counter_delta(struct kgsl_device *device,
 	/* Read the value */
 	kgsl_regread(device, reg, &val);
 
-	if (adreno_is_a5xx(adreno_dev) && reg == adreno_getreg
+	if ((adreno_is_a530(adreno_dev) || adreno_is_a540(adreno_dev)) && reg == adreno_getreg
 		(adreno_dev, ADRENO_REG_RBBM_PERFCTR_RBBM_0_LO)) {
 		prev_perfctr_pwr_hi = perfctr_pwr_hi;
 		overflow = is_power_counter_overflow(adreno_dev, reg,
