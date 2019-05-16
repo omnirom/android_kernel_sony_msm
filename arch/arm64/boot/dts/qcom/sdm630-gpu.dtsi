@@ -71,6 +71,7 @@
 
 		/* <HZ/12> */
 		qcom,idle-timeout = <80>;
+		qcom,no-nap;
 
 		qcom,highest-bank-bit = <14>;
 
@@ -134,9 +135,6 @@
 
 		qcom,gpu-speed-bin = <0x41a0 0x1fe00000 21>;
 
-		/* Enable midframe sampling */
-		qcom,enable-midframe-timer;
-
 		/* GPU Mempools */
 		qcom,gpu-mempools {
 			#address-cells= <1>;
@@ -152,7 +150,7 @@
 			/* 8K Page Pool configuration */
 			qcom,gpu-mempool@1 {
 				reg = <1>;
-				qcom,mempool-page-size = <8196>;
+				qcom,mempool-page-size = <8192>;
 				qcom,mempool-allocate;
 			};
 			/* 64K Page Pool configuration */
